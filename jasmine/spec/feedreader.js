@@ -94,39 +94,51 @@ $(function() {
          */
          beforeEach(function(done) {
            loadFeed(0,done);
-         })
+         });
          it('has atleast one entry when feeder initialises', function() {
            // $(".feed .entry") returns the whole feed array
            expect($(".feed .entry").length).toBeGreaterThan(0);
-         })
+         });
     });
 
     /* TODO: Write a new test suite named "New Feed Selection" */
     describe('New Feed Selection', function(){
       // variables to store state of the feed before and after new selection
-        let feedBefore,feedAfter;
+        let feedOne,feedTwo;
 
         /* TODO: Write a test that ensures when a new feed is loaded
          * by the loadFeed function that the content actually changes.
          * Remember, loadFeed() is asynchronous.
          */
 
-         // Callbacks used for this Asynchronous work.
-         // Optionally Promises or async/await can also be used
-         // https://jasmine.github.io/tutorials/async
-         beforeEach(function(done) {
-           loadFeed(0,() => {
-             feedBefore = $('.feed').html();
-             done(); //required to let Jasmine know which functions/tasks to wait for
-           });
+        /*
+         * Callbacks used for this Asynchronous work.
+         * Optionally Promises or async/await can also be used
+         * https://jasmine.github.io/tutorials/async
+         * Asynchronous Functions are those functions that request
+         * info from the server and meanwhile, the server is processing
+         * that info these functions don't wait for info, the execution of
+         * code proceeds and next lines of the code are executed. These
+         * functions have callback functions associated with them which,
+         * when the response to that request is received make the function
+         * execute.
+         * done required to let Jasmine know which functions/tasks to wait for
+         */
 
-           loadFeed(1, () => {
-             feedAfter = $('.feed').html();
-             done();
+         // Nested loops to ensure 2nd loadFeed function received data from server
+           beforeEach(function(done) {
+           loadFeed(0, () => {
+             feedOne = $('.feed').html();
+             console.log("feed one =", feedOne);
+             loadFeed(1, () => {
+               feedTwo = $('.feed').html();
+              console.log("feed two =", feedTwo);
+               done();
+             });
            });
-         })
+         });
          it('content has changed',function() {
-           expect(feedBefore === feedAfter).toBe(false);
-         })
+           expect(feedOne === feedTwo).toBe(false);
+         });
     });
 }());
